@@ -12,6 +12,7 @@ const modalImage = document.querySelector("#modal-image");
 const modalIngredients = document.querySelector("#modal-ingredients");
 const modalSourceLink = document.querySelector("#modal-source-link");
 const saveFavoriteBtn = document.querySelector("#save-favorite-btn");
+const toastContainer = document.querySelector("#toast-container");
 
 let searchQuery = "";
 let nextPageUrl = "";
@@ -202,11 +203,13 @@ function toggleFavorite(recipeUri) {
     if (isFavorite(recipeUri)) {
         const updatedFavorites = favorites.filter(recipe => recipe.uri !== recipeUri);
         saveFavorites(updatedFavorites);
+        showToast("Recipe removed from favorites.", "error");
     } else {
         const recipeHit = recipeHits.find(hit => hit.recipe.uri === recipeUri);
         if (recipeHit) {
             favorites.push(recipeHit.recipe);
             saveFavorites(favorites);
+            showToast("Recipe saved to favorites!", "success");
         }
     }
     updateFavoriteButton(recipeUri);
@@ -237,4 +240,16 @@ function loadFavorites() {
     if(favorites.length === 0) {
         searchResultDiv.innerHTML = `<p class="error-message">You haven't saved any favorite recipes yet.</p>`;
     }
+}
+
+// --- Toast Notification ---
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.classList.add('toast', type);
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
