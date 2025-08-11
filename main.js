@@ -3,7 +3,6 @@ const searchForm = document.querySelector("form");
 const searchResultDiv = document.querySelector(".search-result");
 const container = document.querySelector(".container");
 const loadMoreContainer = document.querySelector("#load-more-container");
-const dietFilter = document.querySelector("#diet-filter");
 const favoritesBtn = document.querySelector("#favorites-btn");
 const themeToggleBtn = document.querySelector("#theme-toggle-btn");
 const modal = document.querySelector("#recipe-modal");
@@ -14,6 +13,18 @@ const modalIngredients = document.querySelector("#modal-ingredients");
 const modalSourceLink = document.querySelector("#modal-source-link");
 const saveFavoriteBtn = document.querySelector("#save-favorite-btn");
 const toastContainer = document.querySelector("#toast-container");
+const filterPanel = document.querySelector("#filter-panel");
+const filterOverlay = document.querySelector("#filter-overlay");
+const filterToggleBtn = document.querySelector("#filter-toggle-btn");
+const filterCloseBtn = document.querySelector("#filter-close-btn");
+const applyFiltersBtn = document.querySelector("#apply-filters-btn");
+const clearFiltersBtn = document.querySelector("#clear-filters-btn");
+const healthFiltersDiv = document.querySelector("#health-filters");
+const cuisineFilter = document.querySelector("#cuisine-filter");
+const mealFilter = document.querySelector("#meal-filter");
+const minCaloriesInput = document.querySelector("#min-calories");
+const maxCaloriesInput = document.querySelector("#max-calories");
+
 
 // --- App State ---
 const state = {
@@ -32,47 +43,114 @@ const APP_key = "9a3222b9fe5c26bb3bb8f7754ecb0f2d";
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
   state.searchQuery = e.target.querySelector("input").value;
-  const diet = dietFilter.value;
   if (state.searchQuery) {
-    favoritesBtn.classList.remove('active');
-    fetchAPI(true, diet);
+    applyFiltersAndSearch();
   }
 });
 
-favoritesBtn.addEventListener("click", () => {
-    loadFavorites();
-});
-
+favoritesBtn.addEventListener("click", () => loadFavorites());
 themeToggleBtn.addEventListener("click", toggleTheme);
+filterToggleBtn.addEventListener("click", openFilterPanel);
+filterCloseBtn.addEventListener("click", closeFilterPanel);
+filterOverlay.addEventListener("click", closeFilterPanel);
+applyFiltersBtn.addEventListener("click", () => {
+    state.searchQuery = document.querySelector("form input").value;
+    if (state.searchQuery) {
+        applyFiltersAndSearch();
+    } else {
+        showToast("Please enter a search query first.", "error");
+    }
+});
+clearFiltersBtn.addEventListener("click", clearFilters);
 
 searchResultDiv.addEventListener("click", (e) => {
   if (e.target.classList.contains("view-button")) {
     const recipeUri = e.target.dataset.recipeUri;
-    if (recipeUri) {
-      openModal(recipeUri);
-    }
+    if (recipeUri) openModal(recipeUri);
   }
 });
 
 modalCloseBtn.addEventListener("click", closeModal);
 modal.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    closeModal();
-  }
+  if (e.target === modal) closeModal();
 });
 
 saveFavoriteBtn.addEventListener("click", () => {
     toggleFavorite(state.currentRecipeUri);
 });
 
+// --- Filter Logic ---
+function openFilterPanel() {
+    filterPanel.classList.add("active");
+    filterOverlay.classList.add("active");
+}
+
+function closeFilterPanel() {
+    filterPanel.classList.remove("active");
+    filterOverlay.classList.remove("active");
+}
+
+function getAppliedFilters() {
+    const filters = {};
+
+    // Health filters
+    const healthCheckboxes = healthFiltersDiv.querySelectorAll('input[type="checkbox"]:checked');
+    if (healthCheckboxes.length > 0) {
+        filters.health = Array.from(healthCheckboxes).map(cb => cb.value);
+    }
+
+    // Cuisine filter
+    if (cuisineFilter.value) {
+        filters.cuisineType = cuisineFilter.value;
+    }
+
+    // Meal filter
+    if (mealFilter.value) {
+        filters.mealType = mealFilter.value;
+    }
+
+    // Calories filter
+    const minCal = minCaloriesInput.value;
+    const maxCal = maxCaloriesInput.value;
+    if (minCal || maxCal) {
+        filters.calories = `${minCal || 0}-${maxCal || 9999}`;
+    }
+
+    return filters;
+}
+
+function applyFiltersAndSearch() {
+    const filters = getAppliedFilters();
+    favoritesBtn.classList.remove('active');
+    fetchAPI(true, filters);
+    closeFilterPanel();
+}
+
+function clearFilters() {
+    cuisineFilter.value = "";
+    mealFilter.value = "";
+    minCaloriesInput.value = "";
+    maxCaloriesInput.value = "";
+    healthFiltersDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    showToast("Filters cleared", "success");
+}
+
 // --- API and Rendering ---
-async function fetchAPI(isNewSearch, diet = "") {
+async function fetchAPI(isNewSearch, filters = {}) {
   let url = "";
   if (isNewSearch) {
     state.recipeHits = [];
     let baseURL = `https://api.edamam.com/api/recipes/v2?type=public&q=${state.searchQuery}&app_id=${APP_ID}&app_key=${APP_key}`;
-    if (diet) {
-      baseURL += `&diet=${diet}`;
+
+    // Append filters to the URL
+    for (const key in filters) {
+        if (Array.isArray(filters[key])) {
+            filters[key].forEach(value => {
+                baseURL += `&${key}=${value}`;
+            });
+        } else {
+            baseURL += `&${key}=${filters[key]}`;
+        }
     }
     url = baseURL;
   } else {
@@ -86,7 +164,8 @@ async function fetchAPI(isNewSearch, diet = "") {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
     state.recipeHits = state.recipeHits.concat(data.hits);
@@ -99,7 +178,7 @@ async function fetchAPI(isNewSearch, diet = "") {
       hideLoadMoreButton();
     }
   } catch (error) {
-    searchResultDiv.innerHTML = `<p class="error-message">Something went wrong, please try again!</p>`;
+    searchResultDiv.innerHTML = `<p class="error-message">Something went wrong: ${error.message}</p>`;
     hideLoadMoreButton();
   }
 }
@@ -128,7 +207,7 @@ function generateHTML(results, append = false) {
       `;
     });
   } else if (!append) {
-    generatedHTML = `<p class="error-message">No recipes found.</p>`;
+    generatedHTML = `<p class="error-message">No recipes found. Try different keywords or filters.</p>`;
   }
 
   if (append) {

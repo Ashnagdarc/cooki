@@ -13,6 +13,9 @@
             <div class="header">
               <h1 class="brand">Recipe App</h1>
               <div class="header-buttons">
+                <button id="filter-toggle-btn" class="btn btn-icon" aria-label="Toggle filters">
+                    <ion-icon name="options-outline"></ion-icon>
+                </button>
                 <button id="theme-toggle-btn" class="btn btn-icon" aria-label="Toggle theme">
                     <ion-icon name="contrast-outline"></ion-icon>
                 </button>
@@ -21,18 +24,6 @@
             </div>
             <form>
                 <input type="text" placeholder="Search Your Recipe...">
-                <div class="filter-container">
-                  <label for="diet-filter">Diet:</label>
-                  <select id="diet-filter">
-                    <option value="">No Filter</option>
-                    <option value="balanced">Balanced</option>
-                    <option value="high-fiber">High-Fiber</option>
-                    <option value="high-protein">High-Protein</option>
-                    <option value="low-carb">Low-Carb</option>
-                    <option value="low-fat">Low-Fat</option>
-                    <option value="low-sodium">Low-Sodium</option>
-                  </select>
-                </div>
                 <button type="submit" class="btn btn-icon" aria-label="Search">
                   <ion-icon name="search"></ion-icon>
                 </button>
@@ -42,6 +33,57 @@
             <div id="load-more-container"></div>
         </div>
     </section>
+
+    <div id="filter-panel" class="filter-panel">
+        <div class="filter-panel-header">
+            <h2>Filters</h2>
+            <button id="filter-close-btn" class="btn btn-icon" aria-label="Close filters">&times;</button>
+        </div>
+        <div class="filter-panel-content">
+            <div class="filter-group">
+                <label for="cuisine-filter">Cuisine</label>
+                <select id="cuisine-filter" class="filter-select">
+                    <option value="">Any</option>
+                    <option value="american">American</option>
+                    <option value="asian">Asian</option>
+                    <option value="italian">Italian</option>
+                    <option value="mexican">Mexican</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="meal-filter">Meal Type</label>
+                <select id="meal-filter" class="filter-select">
+                    <option value="">Any</option>
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch-dinner">Lunch/Dinner</option>
+                    <option value="snack">Snack</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Health & Allergies</label>
+                <div id="health-filters" class="checkbox-group">
+                    <div><input type="checkbox" id="health-vegetarian" value="vegetarian"><label for="health-vegetarian">Vegetarian</label></div>
+                    <div><input type="checkbox" id="health-vegan" value="vegan"><label for="health-vegan">Vegan</label></div>
+                    <div><input type="checkbox" id="health-gluten-free" value="gluten-free"><label for="health-gluten-free">Gluten-Free</label></div>
+                    <div><input type="checkbox" id="health-peanut-free" value="peanut-free"><label for="health-peanut-free">Peanut-Free</label></div>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label>Calories</label>
+                <div class="calorie-range">
+                    <input type="number" id="min-calories" placeholder="Min" min="0">
+                    <span>-</span>
+                    <input type="number" id="max-calories" placeholder="Max" min="0">
+                </div>
+            </div>
+        </div>
+        <div class="filter-panel-footer">
+            <button id="clear-filters-btn" class="btn btn-danger">Clear</button>
+            <button id="apply-filters-btn" class="btn btn-success">Apply</button>
+        </div>
+    </div>
+    <div id="filter-overlay" class="filter-overlay"></div>
+
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <script src="./main.js"></script>
 
