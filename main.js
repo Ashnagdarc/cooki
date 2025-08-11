@@ -1,10 +1,11 @@
+// --- DOM Elements ---
 const searchForm = document.querySelector("form");
 const searchResultDiv = document.querySelector(".search-result");
 const container = document.querySelector(".container");
 const loadMoreContainer = document.querySelector("#load-more-container");
 const dietFilter = document.querySelector("#diet-filter");
 const favoritesBtn = document.querySelector("#favorites-btn");
-
+const themeToggleBtn = document.querySelector("#theme-toggle-btn");
 const modal = document.querySelector("#recipe-modal");
 const modalCloseBtn = document.querySelector(".modal-close-btn");
 const modalTitle = document.querySelector("#modal-title");
@@ -14,20 +15,25 @@ const modalSourceLink = document.querySelector("#modal-source-link");
 const saveFavoriteBtn = document.querySelector("#save-favorite-btn");
 const toastContainer = document.querySelector("#toast-container");
 
-let searchQuery = "";
-let nextPageUrl = "";
-let recipeHits = [];
-let currentRecipeUri = "";
+// --- App State ---
+const state = {
+    searchQuery: "",
+    nextPageUrl: "",
+    recipeHits: [],
+    currentRecipeUri: "",
+    theme: "light",
+};
 
+// --- Constants ---
 const APP_ID = "4c502aed";
 const APP_key = "9a3222b9fe5c26bb3bb8f7754ecb0f2d";
 
 // --- Event Listeners ---
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  searchQuery = e.target.querySelector("input").value;
+  state.searchQuery = e.target.querySelector("input").value;
   const diet = dietFilter.value;
-  if (searchQuery) {
+  if (state.searchQuery) {
     favoritesBtn.classList.remove('active');
     fetchAPI(true, diet);
   }
@@ -36,6 +42,8 @@ searchForm.addEventListener("submit", (e) => {
 favoritesBtn.addEventListener("click", () => {
     loadFavorites();
 });
+
+themeToggleBtn.addEventListener("click", toggleTheme);
 
 searchResultDiv.addEventListener("click", (e) => {
   if (e.target.classList.contains("view-button")) {
@@ -54,21 +62,21 @@ modal.addEventListener("click", (e) => {
 });
 
 saveFavoriteBtn.addEventListener("click", () => {
-    toggleFavorite(currentRecipeUri);
+    toggleFavorite(state.currentRecipeUri);
 });
 
 // --- API and Rendering ---
 async function fetchAPI(isNewSearch, diet = "") {
   let url = "";
   if (isNewSearch) {
-    recipeHits = [];
-    let baseURL = `https://api.edamam.com/api/recipes/v2?type=public&q=${searchQuery}&app_id=${APP_ID}&app_key=${APP_key}`;
+    state.recipeHits = [];
+    let baseURL = `https://api.edamam.com/api/recipes/v2?type=public&q=${state.searchQuery}&app_id=${APP_ID}&app_key=${APP_key}`;
     if (diet) {
       baseURL += `&diet=${diet}`;
     }
     url = baseURL;
   } else {
-    url = nextPageUrl;
+    url = state.nextPageUrl;
   }
 
   if (isNewSearch) {
@@ -81,11 +89,11 @@ async function fetchAPI(isNewSearch, diet = "") {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    recipeHits = recipeHits.concat(data.hits);
+    state.recipeHits = state.recipeHits.concat(data.hits);
     generateHTML(data.hits, !isNewSearch);
 
     if (data._links && data._links.next && data._links.next.href) {
-      nextPageUrl = data._links.next.href;
+      state.nextPageUrl = data._links.next.href;
       showLoadMoreButton();
     } else {
       hideLoadMoreButton();
@@ -102,13 +110,13 @@ function generateHTML(results, append = false) {
   let generatedHTML = "";
   if (results && results.length > 0) {
     results.forEach((result) => {
-      const recipe = result.recipe ? result.recipe : result; // Handle both hit and direct recipe objects
+      const recipe = result.recipe ? result.recipe : result;
       generatedHTML += `
       <div class="item">
-          <img src="${recipe.image}" alt="img">
+          <img src="${recipe.image}" alt="${recipe.label}">
           <div class="flex-container">
             <h1 class="title">${recipe.label}</h1>
-            <button class="view-button" data-recipe-uri="${recipe.uri}">View Recipe</button>
+            <button class="btn btn-item view-button" data-recipe-uri="${recipe.uri}">View Recipe</button>
           </div>
           <p class="item-data">Calories: ${recipe.calories.toFixed(2)}</p>
           <p class="item-data">Diet label: ${
@@ -138,7 +146,7 @@ function showLoadMoreButton() {
     const loadMoreBtn = document.createElement("button");
     loadMoreBtn.id = "load-more-btn";
     loadMoreBtn.innerText = "Load More";
-    loadMoreBtn.classList.add("view-button");
+    loadMoreBtn.classList.add("btn");
     loadMoreBtn.style.margin = "20px auto";
     loadMoreBtn.style.display = "block";
     loadMoreBtn.addEventListener("click", () => {
@@ -155,7 +163,7 @@ function hideLoadMoreButton() {
 
 // --- Modal Logic ---
 function openModal(recipeUri) {
-  let recipeHit = recipeHits.find(hit => hit.recipe.uri === recipeUri);
+  let recipeHit = state.recipeHits.find(hit => hit.recipe.uri === recipeUri);
   if (!recipeHit) {
       const favorites = getFavorites();
       const favoriteRecipe = favorites.find(recipe => recipe.uri === recipeUri);
@@ -167,7 +175,7 @@ function openModal(recipeUri) {
   if (!recipeHit) return;
 
   const recipe = recipeHit.recipe;
-  currentRecipeUri = recipe.uri;
+  state.currentRecipeUri = recipe.uri;
 
   modalTitle.textContent = recipe.label;
   modalImage.src = recipe.image;
@@ -182,7 +190,7 @@ function openModal(recipeUri) {
 
 function closeModal() {
   modal.style.display = "none";
-  currentRecipeUri = "";
+  state.currentRecipeUri = "";
 }
 
 // --- Favorites Logic ---
@@ -205,7 +213,7 @@ function toggleFavorite(recipeUri) {
         saveFavorites(updatedFavorites);
         showToast("Recipe removed from favorites.", "error");
     } else {
-        const recipeHit = recipeHits.find(hit => hit.recipe.uri === recipeUri);
+        const recipeHit = state.recipeHits.find(hit => hit.recipe.uri === recipeUri);
         if (recipeHit) {
             favorites.push(recipeHit.recipe);
             saveFavorites(favorites);
@@ -223,10 +231,12 @@ function toggleFavorite(recipeUri) {
 function updateFavoriteButton(recipeUri) {
     if (isFavorite(recipeUri)) {
         saveFavoriteBtn.textContent = "Remove from Favorites";
-        saveFavoriteBtn.classList.add("favorited");
+        saveFavoriteBtn.classList.remove("btn-success");
+        saveFavoriteBtn.classList.add("btn-danger");
     } else {
         saveFavoriteBtn.textContent = "Save to Favorites";
-        saveFavoriteBtn.classList.remove("favorited");
+        saveFavoriteBtn.classList.remove("btn-danger");
+        saveFavoriteBtn.classList.add("btn-success");
     }
 }
 
@@ -253,3 +263,29 @@ function showToast(message, type = 'success') {
         toast.remove();
     }, 3000);
 }
+
+// --- Theme Logic ---
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+}
+
+function toggleTheme() {
+    state.theme = state.theme === 'light' ? 'dark' : 'light';
+    localStorage.setItem('theme', state.theme);
+    applyTheme(state.theme);
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        state.theme = savedTheme;
+    }
+    applyTheme(state.theme);
+}
+
+// --- Initial Load ---
+loadTheme();
