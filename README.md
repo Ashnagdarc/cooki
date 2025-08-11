@@ -1,2 +1,0 @@
-# cooki
- Recipe Search App
