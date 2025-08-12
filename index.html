@@ -1,41 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COOKI</title>
+    <title>COOKI - Discover Delicious Recipes</title>
+    <meta name="description" content="Discover and explore delicious recipes from around the world with COOKI">
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts for modern look -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet">
-    <!-- Add a favicon for polish -->
-    <link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/cookie.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>">
+    <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
-    <section>
-        <div class="container initial">
-            <h1 class="brand gradient-text"><img src="https://img.icons8.com/ios-filled/50/ffb347/cookie.png" alt="cookie" style="height:2em;vertical-align:middle;margin-right:0.5em;">COOKI Recipe App</h1>
-            <form class="search-form" id="search-form">
-                <input type="text" placeholder="Search Your Recipe..." class="search-input" aria-label="Search Your Recipe" id="search-input">
-                <button type="submit" class="search-btn" title="Search" aria-label="Search"><ion-icon name="search"></ion-icon></button>
-            </form>
-            <div class="search-result grid" id="search-result">
-                <!-- Results will be rendered here by JS -->
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🍪</span>
+                <span class="brand-text">COOKI</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link active">Recipes</a>
+                <a href="meal-planner.html" class="nav-link">Meal Planner</a>
+                <a href="shopping-list.html" class="nav-link">Shopping List</a>
+                <a href="favorites.html" class="nav-link">Favorites</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Discover Amazing Recipes</h1>
+                <p class="hero-subtitle">Explore thousands of delicious recipes from around the world, including local
+                    Nigerian favorites</p>
+
+                <!-- Enhanced Search Form -->
+                <form class="search-form" id="search-form">
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" id="search-input"
+                                placeholder="Search for recipes, ingredients, or cuisines..." class="search-input"
+                                autocomplete="off">
+                            <button type="submit" class="search-btn">
+                                <span>Search</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Quick Search Suggestions -->
+                <div class="quick-suggestions">
+                    <span class="suggestion-label">Popular:</span>
+                    <button class="suggestion-tag" data-search="chicken">Chicken</button>
+                    <button class="suggestion-tag" data-search="pasta">Pasta</button>
+                    <button class="suggestion-tag" data-search="jollof">Jollof Rice</button>
+                    <button class="suggestion-tag" data-search="dessert">Dessert</button>
+                </div>
+
+                <!-- Hero Stats -->
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">50K+</span>
+                        <span class="stat-label">Recipes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">200+</span>
+                        <span class="stat-label">Countries</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Available</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    <!-- Modal for advanced recipe view -->
-    <div id="recipe-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2 id="modal-title">Recipe Title</h2>
-            <img id="modal-img" src="" alt="Recipe Image">
-            <p id="modal-calories">Calories: </p>
-            <div id="modal-details">Recipe details go here...</div>
+
+    <!-- Featured Recipes Section -->
+    <section class="featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Recipes</h2>
+                <p>Discover our handpicked favorites from around the world</p>
+            </div>
+            <div class="featured-grid" id="featured-grid">
+                <!-- Featured recipes will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Start Cooking?</h2>
+                <p>Join thousands of food lovers discovering amazing recipes every day</p>
+                <div class="cta-actions">
+                    <button class="btn btn-primary btn-large" onclick="document.getElementById('search-input').focus()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Start Searching
+                    </button>
+                    <a href="meal-planner.html" class="btn btn-secondary btn-large">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Plan Your Meals
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Filters and Controls -->
+            <div class="controls-section">
+                <div class="filters-toolbar" id="filters-toolbar">
+                    <div class="filter-group">
+                        <select id="filter-category" class="filter-select">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="filter-area" class="filter-select">
+                            <option value="">All Areas</option>
+                        </select>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="filter-local">
+                            <span class="checkmark"></span>
+                            Local Recipes Only
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="filter-favorites">
+                            <span class="checkmark"></span>
+                            Favorites Only
+                        </label>
+                    </div>
+                    <div class="sort-group">
+                        <select id="sort-by" class="sort-select">
+                            <option value="az">A-Z</option>
+                            <option value="za">Z-A</option>
+                            <option value="favorites">Favorites First</option>
+                            <option value="local">Local First</option>
+                        </select>
+                    </div>
+                    <div class="view-toggle">
+                        <button id="view-toggle-btn" class="btn btn-secondary" aria-pressed="false">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Grid View
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Summary -->
+                <div class="results-summary" id="results-summary">
+                    <span class="results-count">0 recipes found</span>
+                    <div class="results-actions">
+                        <button class="btn btn-secondary btn-sm" id="clear-filters">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-grid" id="search-results">
+                    <!-- Recipe cards will be loaded here -->
+                </div>
+
+                <!-- Skeleton Loading Grid -->
+                <div class="skeleton-grid" id="skeleton-grid" style="display: none;">
+                    <!-- Skeleton cards will be generated here -->
+                </div>
+
+                <div class="results-footer">
+                    <div class="loading-spinner" id="loading-spinner" style="display: none;"></div>
+                    <div class="end-of-results" id="end-of-results" style="display: none;">
+                        <p>You've reached the end of the results</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <div class="empty-icon">🍽️</div>
+                <h3>No recipes found</h3>
+                <p>Try adjusting your search terms or filters to find what you're looking for</p>
+                <button class="btn btn-primary" onclick="document.getElementById('search-input').focus()">
+                    Start a new search
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Recipe Modal -->
+    <div class="modal" id="recipe-modal">
+        <div class="modal-overlay">
+            <div class="modal-container">
+                <button class="modal-close" id="modal-close" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modal-title">Recipe Details</h2>
+                        <button class="btn btn-primary" id="add-to-meal-plan">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 5v14M5 12h14"></path>
+                            </svg>
+                            Add to Meal Plan
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="recipe-modal-content">
+                            <div class="recipe-modal-image">
+                                <img id="modal-img" src="" alt="Recipe image">
+                            </div>
+                            <div class="recipe-modal-info">
+                                <div class="recipe-modal-meta">
+                                    <span id="modal-category" class="recipe-category"></span>
+                                    <span id="modal-area" class="recipe-area"></span>
+                                </div>
+                                <div class="recipe-ingredients" id="modal-ingredients">
+                                    <!-- Ingredients will be loaded here -->
+                                </div>
+                                <div class="recipe-instructions" id="modal-instructions">
+                                    <!-- Instructions will be loaded here -->
+                                </div>
+                                <div class="recipe-source" id="modal-source">
+                                    <!-- Source link will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <script type="module" src="https://unpkg.com/ionicons@5.1.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.1.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- Meal Plan Modal -->
+    <div class="modal" id="meal-plan-modal">
+        <div class="modal-overlay">
+            <div class="modal-container">
+                <button class="modal-close" id="meal-plan-modal-close" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add to Meal Plan</h2>
+                    </div>
+                    <div class="modal-body">
+                        <form class="meal-plan-form">
+                            <div class="form-group">
+                                <label for="meal-day">Day:</label>
+                                <select id="meal-day" class="form-select" required>
+                                    <option value="monday">Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                    <option value="saturday">Saturday</option>
+                                    <option value="sunday">Sunday</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="meal-type">Meal Type:</label>
+                                <select id="meal-type" class="form-select" required>
+                                    <option value="breakfast">Breakfast</option>
+                                    <option value="lunch">Lunch</option>
+                                    <option value="dinner">Dinner</option>
+                                    <option value="snack">Snack</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="servings">Servings:</label>
+                                <input type="number" id="servings" class="form-input" min="1" max="20" value="2"
+                                    required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" id="cancel-add-meal">Cancel</button>
+                                <button type="button" class="btn btn-primary" id="confirm-add-meal">Add to Plan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 COOKI. Made with ❤️ for food lovers everywhere.</p>
+        </div>
+    </footer>
+
+    <!-- Aria Live Region for Accessibility -->
+    <div id="aria-live" class="sr-only" aria-live="polite"></div>
+
     <script src="./main.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,45 @@
+{
+    "name": "cooki",
+    "version": "1.0.0",
+    "description": "A comprehensive recipe discovery and meal planning application",
+    "main": "index.html",
+    "scripts": {
+        "start": "python3 -m http.server 8000",
+        "dev": "python3 -m http.server 8000",
+        "serve": "python3 -m http.server 8000",
+        "build": "echo 'No build process needed for static HTML/CSS/JS'",
+        "lint": "echo 'No linting configured yet'",
+        "test": "echo 'No tests configured yet'"
+    },
+    "keywords": [
+        "recipe",
+        "meal-planning",
+        "shopping-list",
+        "food",
+        "cooking",
+        "web-app",
+        "html",
+        "css",
+        "javascript"
+    ],
+    "author": "COOKI Team",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/cooki.git"
+    },
+    "bugs": {
+        "url": "https://github.com/yourusername/cooki/issues"
+    },
+    "homepage": "https://github.com/yourusername/cooki#readme",
+    "devDependencies": {},
+    "dependencies": {},
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not dead"
+    ]
+}

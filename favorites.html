@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites - COOKI</title>
+    <meta name="description" content="Your saved favorite recipes">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🍪</span>
+                <span class="brand-text">COOKI</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Recipes</a>
+                <a href="meal-planner.html" class="nav-link">Meal Planner</a>
+                <a href="shopping-list.html" class="nav-link">Shopping List</a>
+                <a href="favorites.html" class="nav-link active">Favorites</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Favorites Section -->
+    <section class="favorites-section">
+        <div class="container">
+            <div class="section-header">
+                <h1>Your Favorites</h1>
+                <p>All your saved recipes in one place</p>
+            </div>
+
+            <!-- Favorites Stats -->
+            <div class="favorites-stats">
+                <div class="stats-card">
+                    <div class="stat-icon">❤️</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="total-favorites">0</div>
+                        <div class="stat-label">Total Favorites</div>
+                    </div>
+                </div>
+                <div class="stats-card">
+                    <div class="stat-icon">🌍</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="local-favorites">0</div>
+                        <div class="stat-label">Local Recipes</div>
+                    </div>
+                </div>
+                <div class="stats-card">
+                    <div class="stat-icon">🍽️</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="categories-count">0</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Sort Toolbar -->
+            <div class="filters-toolbar">
+                <div class="filter-group">
+                    <select id="filter-category" class="filter-select">
+                        <option value="">All Categories</option>
+                    </select>
+                    <select id="filter-area" class="filter-select">
+                        <option value="">All Areas</option>
+                    </select>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="filter-local">
+                        <span class="checkmark"></span>
+                        Local Recipes Only
+                    </label>
+                </div>
+                <div class="sort-group">
+                    <select id="sort-by" class="sort-select">
+                        <option value="recent">Recently Added</option>
+                        <option value="az">A-Z</option>
+                        <option value="za">Z-A</option>
+                        <option value="local">Local First</option>
+                        <option value="category">By Category</option>
+                    </select>
+                </div>
+                <div class="view-toggle">
+                    <button id="view-toggle-btn" class="btn btn-secondary" aria-pressed="false">
+                        List View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-grid" id="favorites-results">
+                    <!-- Favorites will be loaded here -->
+                </div>
+
+                <!-- Skeleton Loading Grid -->
+                <div class="skeleton-grid" id="skeleton-grid" style="display: none;">
+                    <!-- Skeleton cards will be generated here -->
+                </div>
+
+                <div class="empty-favorites" id="empty-favorites" style="display: none;">
+                    <div class="empty-icon">❤️</div>
+                    <h3>No favorites yet</h3>
+                    <p>Start exploring recipes and save your favorites to see them here</p>
+                    <a href="index.html" class="btn btn-primary">Discover Recipes</a>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="actions-grid">
+                    <button class="action-card" id="export-favorites">
+                        <div class="action-icon">📄</div>
+                        <h4>Export List</h4>
+                        <p>Download your favorites as CSV</p>
+                    </button>
+                    <button class="action-card" id="clear-favorites">
+                        <div class="action-icon">🗑️</div>
+                        <h4>Clear All</h4>
+                        <p>Remove all favorites</p>
+                    </button>
+                    <button class="action-card" id="add-to-meal-plan">
+                        <div class="action-icon">📅</div>
+                        <h4>Add to Meal Plan</h4>
+                        <p>Plan your week with favorites</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recipe Modal -->
+    <div class="modal" id="recipe-modal">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">Recipe Details</h2>
+                    <button class="modal-close" id="recipe-modal-close">&times;</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Recipe content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meal Plan Modal -->
+    <div class="modal" id="meal-plan-modal">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add to Meal Plan</h2>
+                    <button class="modal-close" id="meal-plan-modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="meal-plan-form">
+                        <div class="form-group">
+                            <label for="meal-day">Day:</label>
+                            <select id="meal-day" required>
+                                <option value="monday">Monday</option>
+                                <option value="tuesday">Tuesday</option>
+                                <option value="wednesday">Wednesday</option>
+                                <option value="thursday">Thursday</option>
+                                <option value="friday">Friday</option>
+                                <option value="saturday">Saturday</option>
+                                <option value="sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="meal-type">Meal Type:</label>
+                            <select id="meal-type" required>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                                <option value="snack">Snack</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="servings">Servings:</label>
+                            <input type="number" id="servings" min="1" max="20" value="2" required>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-add-meal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="confirm-add-meal">Add to Plan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 COOKI. Made with ❤️ for food lovers everywhere.</p>
+        </div>
+    </footer>
+
+    <!-- Aria Live Region for Accessibility -->
+    <div id="aria-live" class="sr-only" aria-live="polite"></div>
+
+    <script src="./favorites.js"></script>
+</body>
+
+</html>

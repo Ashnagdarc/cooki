@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List - COOKI</title>
+    <meta name="description" content="Your personalized shopping list generated from your meal plan">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🍪</span>
+                <span class="brand-text">COOKI</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Recipes</a>
+                <a href="meal-planner.html" class="nav-link">Meal Planner</a>
+                <a href="shopping-list.html" class="nav-link active">Shopping List</a>
+                <a href="favorites.html" class="nav-link">Favorites</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Shopping List Section -->
+    <section class="shopping-list-section">
+        <div class="container">
+            <div class="section-header">
+                <h1>Shopping List</h1>
+                <p>Automatically generated from your meal plan</p>
+            </div>
+
+            <!-- Add Item Form -->
+            <div class="add-item-section">
+                <form id="add-item-form" class="add-item-form">
+                    <div class="form-group">
+                        <input type="text" id="item-name" placeholder="Item name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="item-quantity" placeholder="Quantity" value="1" min="0.1" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <select id="item-category">
+                            <option value="">Select category</option>
+                            <option value="Produce">Produce</option>
+                            <option value="Protein">Protein</option>
+                            <option value="Dairy">Dairy</option>
+                            <option value="Grains">Grains</option>
+                            <option value="Pantry">Pantry</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Item</button>
+                </form>
+            </div>
+
+            <div class="shopping-list-container">
+                <div class="shopping-list-header">
+                    <div class="list-stats">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Total:</span>
+                                <span class="stat-value" id="total-items">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Checked:</span>
+                                <span class="stat-value" id="checked-items">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Remaining:</span>
+                                <span class="stat-value" id="remaining-items">0</span>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar"></div>
+                        </div>
+                    </div>
+                    <div class="list-actions">
+                        <button class="btn btn-secondary" id="export-csv">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14,2 14,8 20,8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10,9 9,9 8,9"></polyline>
+                            </svg>
+                            Export CSV
+                        </button>
+                        <button class="btn btn-secondary" id="clear-purchased">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="3,6 5,6 21,6"></polyline>
+                                <path
+                                    d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2">
+                                </path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                            Clear Purchased
+                        </button>
+                        <button class="btn btn-secondary" id="print-list">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="6,9 6,2 18,2 18,9"></polyline>
+                                <path
+                                    d="M6,18H4a2,2 0 0,1 -2,-2V11a2,2 0 0,1 2,-2H20a2,2 0 0,1 2,2v5a2,2 0 0,1 -2,2H18">
+                                </path>
+                            </svg>
+                            Print List
+                        </button>
+                        <button class="btn btn-danger" id="clear-all">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="3,6 5,6 21,6"></polyline>
+                                <path
+                                    d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2">
+                                </path>
+                            </svg>
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <div id="shopping-list-container">
+                    <!-- Shopping list items will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Shopping Tips -->
+            <div class="shopping-tips">
+                <h3>Shopping Tips</h3>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <div class="tip-icon">📝</div>
+                        <h4>Check Your Pantry</h4>
+                        <p>Before shopping, check what you already have to avoid duplicates.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">💰</div>
+                        <h4>Budget Planning</h4>
+                        <p>Use the cost estimate to plan your grocery budget for the week.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🕒</div>
+                        <h4>Shop by Category</h4>
+                        <p>Follow the categorized list to shop more efficiently and save time.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">📱</div>
+                        <h4>Use Your Phone</h4>
+                        <p>Check off items as you shop using your mobile device.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 COOKI. Made with ❤️ for food lovers everywhere.</p>
+        </div>
+    </footer>
+
+    <script src="./shopping-list.js"></script>
+</body>
+
+</html>

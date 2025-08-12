@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planner - COOKI</title>
+    <meta name="description" content="Plan your weekly meals with COOKI's meal planner">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🍪</span>
+                <span class="brand-text">COOKI</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Recipes</a>
+                <a href="meal-planner.html" class="nav-link active">Meal Planner</a>
+                <a href="shopping-list.html" class="nav-link">Shopping List</a>
+                <a href="favorites.html" class="nav-link">Favorites</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Meal Planner Section -->
+    <section class="meal-planner-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="header-content">
+                    <div>
+                        <h1>Meal Planner</h1>
+                        <p>Plan your weekly meals and generate shopping lists</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" id="print-plan">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="6,9 6,2 18,2 18,9"></polyline>
+                                <path
+                                    d="M6,18H4a2,2 0 0,1 -2,-2V11a2,2 0 0,1 2,-2H20a2,2 0 0,1 2,2v5a2,2 0 0,1 -2,2H18">
+                                </path>
+                            </svg>
+                            Print Plan
+                        </button>
+                        <button class="btn btn-secondary" id="share-plan">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            Share Plan
+                        </button>
+                        <button class="btn btn-secondary" id="import-plan">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7,10 12,15 17,10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Import Plan
+                        </button>
+                        <button class="btn btn-secondary" id="keyboard-nav">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                                <line x1="6" y1="8" x2="6" y2="8"></line>
+                                <line x1="10" y1="8" x2="10" y2="8"></line>
+                                <line x1="14" y1="8" x2="14" y2="8"></line>
+                                <line x1="18" y1="8" x2="18" y2="8"></line>
+                                <line x1="6" y1="12" x2="6" y2="12"></line>
+                                <line x1="10" y1="12" x2="10" y2="12"></line>
+                                <line x1="14" y1="12" x2="14" y2="12"></line>
+                                <line x1="18" y1="12" x2="18" y2="12"></line>
+                                <line x1="6" y1="16" x2="6" y2="16"></line>
+                                <line x1="10" y1="16" x2="10" y2="16"></line>
+                                <line x1="14" y1="16" x2="14" y2="16"></line>
+                                <line x1="18" y1="16" x2="18" y2="16"></line>
+                            </svg>
+                            Keyboard Nav
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="planner-container">
+                <!-- Week Navigation -->
+                <div class="week-navigation">
+                    <button class="btn btn-secondary" id="prev-week">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="15,18 9,12 15,6"></polyline>
+                        </svg>
+                        Previous Week
+                    </button>
+                    <h3 id="current-week">This Week</h3>
+                    <button class="btn btn-secondary" id="next-week">
+                        Next Week
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="9,18 15,12 9,6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Meal Calendar -->
+                <div class="meal-calendar" id="meal-calendar">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="planner-actions">
+                    <button class="btn btn-primary" id="generate-shopping-list">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M9 11H1l3-3-3-3h8"></path>
+                            <path d="M15 13h8l-3 3 3 3h-8"></path>
+                        </svg>
+                        Generate Shopping List
+                    </button>
+                    <button class="btn btn-secondary" id="clear-week">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"></polyline>
+                            <path
+                                d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2">
+                            </path>
+                        </svg>
+                        Clear Week
+                    </button>
+                </div>
+
+                <!-- Quick Add Recipe -->
+                <div class="quick-add-section">
+                    <h3>Quick Add Recipe</h3>
+                    <div class="quick-add-form">
+                        <input type="text" id="quick-recipe-search" placeholder="Search for a recipe to add..."
+                            class="search-input">
+                        <div id="quick-search-results" class="quick-search-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recipe Search Modal -->
+    <div class="modal" id="recipe-search-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close" id="recipe-search-modal-close" aria-label="Close modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Search Recipes</h2>
+                </div>
+
+                <div class="modal-body">
+                    <form class="search-form" id="modal-search-form">
+                        <div class="search-wrapper">
+                            <input type="text" placeholder="Search for recipes..." class="search-input"
+                                id="modal-search-input">
+                            <button type="submit" class="search-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="modal-results" id="modal-results">
+                        <!-- Search results will appear here -->
+                    </div>
+
+                    <!-- Skeleton Loading Grid -->
+                    <div class="skeleton-grid" id="modal-skeleton-grid" style="display: none;">
+                        <!-- Skeleton cards will be generated here -->
+                    </div>
+
+                    <div class="modal-results-footer">
+                        <div class="loading-spinner" id="modal-loading-spinner" style="display: none;"></div>
+                        <div class="no-results" id="modal-no-results" style="display: none;">
+                            <p>No recipes found. Try a different search term.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meal Plan Modal -->
+    <div class="modal" id="meal-plan-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <button class="modal-close" id="meal-plan-modal-close" aria-label="Close modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Add to Meal Plan</h2>
+                </div>
+
+                <div class="modal-body">
+                    <div class="meal-plan-form">
+                        <div class="form-group">
+                            <label for="meal-day">Day:</label>
+                            <select id="meal-day" class="form-select">
+                                <option value="monday">Monday</option>
+                                <option value="tuesday">Tuesday</option>
+                                <option value="wednesday">Wednesday</option>
+                                <option value="thursday">Thursday</option>
+                                <option value="friday">Friday</option>
+                                <option value="saturday">Saturday</option>
+                                <option value="sunday">Sunday</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="meal-type">Meal Type:</label>
+                            <select id="meal-type" class="form-select">
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                                <option value="snack">Snack</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="servings">Servings:</label>
+                            <input type="number" id="servings" class="form-input" min="1" max="10" value="2">
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="confirm-add-meal">Add to Plan</button>
+                            <button class="btn btn-secondary" id="cancel-add-meal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 COOKI. Made with ❤️ for food lovers everywhere.</p>
+        </div>
+    </footer>
+
+    <!-- Hidden file input for importing plans -->
+    <input type="file" id="import-file" accept=".json" style="display: none;">
+
+    <!-- Share Plan Modal -->
+    <div class="modal" id="share-modal">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Share Meal Plan</h2>
+                    <button class="modal-close" id="share-modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="share-options">
+                        <div class="share-option">
+                            <h3>Copy Link</h3>
+                            <p>Share this link with others to let them import your meal plan</p>
+                            <div class="share-link-container">
+                                <input type="text" id="share-link" readonly>
+                                <button class="btn btn-primary" id="copy-link">Copy</button>
+                            </div>
+                        </div>
+                        <div class="share-option">
+                            <h3>Download JSON</h3>
+                            <p>Download your meal plan as a JSON file to share or backup</p>
+                            <button class="btn btn-secondary" id="download-json">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Plan Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Import Meal Plan</h2>
+                    <button class="modal-close" id="import-modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="import-options">
+                        <div class="import-option">
+                            <h3>From File</h3>
+                            <p>Upload a JSON file containing a meal plan</p>
+                            <button class="btn btn-secondary" id="upload-file">Choose File</button>
+                        </div>
+                        <div class="import-option">
+                            <h3>From URL</h3>
+                            <p>Import a meal plan from a shared link</p>
+                            <div class="import-url-container">
+                                <input type="text" id="import-url" placeholder="Paste shared link here">
+                                <button class="btn btn-primary" id="import-from-url">Import</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="import-preview" id="import-preview" style="display: none;">
+                        <h3>Preview</h3>
+                        <div id="preview-content"></div>
+                        <div class="import-actions">
+                            <button class="btn btn-secondary" id="cancel-import">Cancel</button>
+                            <button class="btn btn-primary" id="confirm-import">Import Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Navigation Modal -->
+    <div class="modal" id="keyboard-nav-modal">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Keyboard Navigation</h2>
+                    <button class="modal-close" id="keyboard-nav-modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="keyboard-nav-content">
+                        <div class="nav-section">
+                            <h3>Week Navigation</h3>
+                            <div class="shortcut-grid">
+                                <div class="shortcut-item">
+                                    <kbd>←</kbd>
+                                    <span>Previous Week</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>→</kbd>
+                                    <span>Next Week</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>Home</kbd>
+                                    <span>Current Week</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-section">
+                            <h3>Day Navigation</h3>
+                            <div class="shortcut-grid">
+                                <div class="shortcut-item">
+                                    <kbd>1</kbd>
+                                    <span>Monday</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>2</kbd>
+                                    <span>Tuesday</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>3</kbd>
+                                    <span>Wednesday</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>4</kbd>
+                                    <span>Thursday</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>5</kbd>
+                                    <span>Friday</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>6</kbd>
+                                    <span>Saturday</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>7</kbd>
+                                    <span>Sunday</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-section">
+                            <h3>Meal Type Navigation</h3>
+                            <div class="shortcut-grid">
+                                <div class="shortcut-item">
+                                    <kbd>B</kbd>
+                                    <span>Breakfast</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>L</kbd>
+                                    <span>Lunch</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>D</kbd>
+                                    <span>Dinner</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>S</kbd>
+                                    <span>Snack</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-section">
+                            <h3>Quick Actions</h3>
+                            <div class="shortcut-grid">
+                                <div class="shortcut-item">
+                                    <kbd>Space</kbd>
+                                    <span>Quick Add Recipe</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>G</kbd>
+                                    <span>Generate Shopping List</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>P</kbd>
+                                    <span>Print Plan</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <kbd>?</kbd>
+                                    <span>Show This Help</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-section">
+                            <h3>Tips</h3>
+                            <ul class="nav-tips">
+                                <li>Press <kbd>?</kbd> anytime to show this help</li>
+                                <li>Use <kbd>Tab</kbd> to navigate between interactive elements</li>
+                                <li>Press <kbd>Enter</kbd> or <kbd>Space</kbd> to activate buttons</li>
+                                <li>Use <kbd>Escape</kbd> to close modals and menus</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./meal-planner.js"></script>
+</body>
+
+</html>
