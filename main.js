@@ -5,6 +5,9 @@ const container = document.querySelector(".container");
 const loadMoreContainer = document.querySelector("#load-more-container");
 const favoritesBtn = document.querySelector("#favorites-btn");
 const themeToggleBtn = document.querySelector("#theme-toggle-btn");
+const filterToggleBtn = document.querySelector("#filter-toggle-btn");
+const shoppingListBtn = document.querySelector("#shopping-list-btn");
+
 const modal = document.querySelector("#recipe-modal");
 const modalCloseBtn = document.querySelector(".modal-close-btn");
 const modalTitle = document.querySelector("#modal-title");
@@ -13,9 +16,9 @@ const modalIngredients = document.querySelector("#modal-ingredients");
 const modalSourceLink = document.querySelector("#modal-source-link");
 const saveFavoriteBtn = document.querySelector("#save-favorite-btn");
 const toastContainer = document.querySelector("#toast-container");
+
 const filterPanel = document.querySelector("#filter-panel");
 const filterOverlay = document.querySelector("#filter-overlay");
-const filterToggleBtn = document.querySelector("#filter-toggle-btn");
 const filterCloseBtn = document.querySelector("#filter-close-btn");
 const applyFiltersBtn = document.querySelector("#apply-filters-btn");
 const clearFiltersBtn = document.querySelector("#clear-filters-btn");
@@ -24,6 +27,11 @@ const cuisineFilter = document.querySelector("#cuisine-filter");
 const mealFilter = document.querySelector("#meal-filter");
 const minCaloriesInput = document.querySelector("#min-calories");
 const maxCaloriesInput = document.querySelector("#max-calories");
+
+const shoppingListModal = document.querySelector("#shopping-list-modal");
+const shoppingListItemsUl = document.querySelector("#shopping-list-items");
+const shoppingListCloseBtn = shoppingListModal.querySelector(".modal-close-btn");
+const copyListBtn = document.querySelector("#copy-list-btn");
 
 
 // --- App State ---
@@ -62,6 +70,9 @@ applyFiltersBtn.addEventListener("click", () => {
     }
 });
 clearFiltersBtn.addEventListener("click", clearFilters);
+shoppingListBtn.addEventListener("click", generateShoppingList);
+shoppingListCloseBtn.addEventListener("click", () => shoppingListModal.style.display = 'none');
+copyListBtn.addEventListener("click", copyShoppingList);
 
 searchResultDiv.addEventListener("click", (e) => {
   if (e.target.classList.contains("view-button")) {
@@ -92,36 +103,24 @@ function closeFilterPanel() {
 
 function getAppliedFilters() {
     const filters = {};
-
-    // Health filters
     const healthCheckboxes = healthFiltersDiv.querySelectorAll('input[type="checkbox"]:checked');
     if (healthCheckboxes.length > 0) {
         filters.health = Array.from(healthCheckboxes).map(cb => cb.value);
     }
-
-    // Cuisine filter
-    if (cuisineFilter.value) {
-        filters.cuisineType = cuisineFilter.value;
-    }
-
-    // Meal filter
-    if (mealFilter.value) {
-        filters.mealType = mealFilter.value;
-    }
-
-    // Calories filter
+    if (cuisineFilter.value) filters.cuisineType = cuisineFilter.value;
+    if (mealFilter.value) filters.mealType = mealFilter.value;
     const minCal = minCaloriesInput.value;
     const maxCal = maxCaloriesInput.value;
     if (minCal || maxCal) {
         filters.calories = `${minCal || 0}-${maxCal || 9999}`;
     }
-
     return filters;
 }
 
 function applyFiltersAndSearch() {
     const filters = getAppliedFilters();
     favoritesBtn.classList.remove('active');
+    shoppingListBtn.style.display = 'none';
     fetchAPI(true, filters);
     closeFilterPanel();
 }
@@ -141,13 +140,9 @@ async function fetchAPI(isNewSearch, filters = {}) {
   if (isNewSearch) {
     state.recipeHits = [];
     let baseURL = `https://api.edamam.com/api/recipes/v2?type=public&q=${state.searchQuery}&app_id=${APP_ID}&app_key=${APP_key}`;
-
-    // Append filters to the URL
     for (const key in filters) {
         if (Array.isArray(filters[key])) {
-            filters[key].forEach(value => {
-                baseURL += `&${key}=${value}`;
-            });
+            filters[key].forEach(value => baseURL += `&${key}=${value}`);
         } else {
             baseURL += `&${key}=${filters[key]}`;
         }
@@ -157,9 +152,7 @@ async function fetchAPI(isNewSearch, filters = {}) {
     url = state.nextPageUrl;
   }
 
-  if (isNewSearch) {
-    searchResultDiv.innerHTML = '<div class="spinner"></div>';
-  }
+  if (isNewSearch) searchResultDiv.innerHTML = '<div class="spinner"></div>';
 
   try {
     const response = await fetch(url);
@@ -185,7 +178,6 @@ async function fetchAPI(isNewSearch, filters = {}) {
 
 function generateHTML(results, append = false) {
   container.classList.remove("initial");
-
   let generatedHTML = "";
   if (results && results.length > 0) {
     results.forEach((result) => {
@@ -209,7 +201,6 @@ function generateHTML(results, append = false) {
   } else if (!append) {
     generatedHTML = `<p class="error-message">No recipes found. Try different keywords or filters.</p>`;
   }
-
   if (append) {
     const spinner = searchResultDiv.querySelector('.spinner');
     if(spinner) spinner.remove();
@@ -218,7 +209,6 @@ function generateHTML(results, append = false) {
     searchResultDiv.innerHTML = generatedHTML;
   }
 }
-
 
 function showLoadMoreButton() {
     loadMoreContainer.innerHTML = '';
@@ -246,23 +236,15 @@ function openModal(recipeUri) {
   if (!recipeHit) {
       const favorites = getFavorites();
       const favoriteRecipe = favorites.find(recipe => recipe.uri === recipeUri);
-      if (favoriteRecipe) {
-          recipeHit = { recipe: favoriteRecipe };
-      }
+      if (favoriteRecipe) recipeHit = { recipe: favoriteRecipe };
   }
-
   if (!recipeHit) return;
-
   const recipe = recipeHit.recipe;
   state.currentRecipeUri = recipe.uri;
-
   modalTitle.textContent = recipe.label;
   modalImage.src = recipe.image;
-  modalIngredients.innerHTML = recipe.ingredientLines
-    .map((line) => `<li>${line}</li>`)
-    .join("");
+  modalIngredients.innerHTML = recipe.ingredientLines.map((line) => `<li>${line}</li>`).join("");
   modalSourceLink.href = recipe.url;
-
   updateFavoriteButton(recipe.uri);
   modal.style.display = "flex";
 }
@@ -276,20 +258,16 @@ function closeModal() {
 function getFavorites() {
     return JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
 }
-
 function saveFavorites(favorites) {
     localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
 }
-
 function isFavorite(recipeUri) {
     return getFavorites().some(recipe => recipe.uri === recipeUri);
 }
-
 function toggleFavorite(recipeUri) {
     const favorites = getFavorites();
     if (isFavorite(recipeUri)) {
-        const updatedFavorites = favorites.filter(recipe => recipe.uri !== recipeUri);
-        saveFavorites(updatedFavorites);
+        saveFavorites(favorites.filter(recipe => recipe.uri !== recipeUri));
         showToast("Recipe removed from favorites.", "error");
     } else {
         const recipeHit = state.recipeHits.find(hit => hit.recipe.uri === recipeUri);
@@ -300,13 +278,11 @@ function toggleFavorite(recipeUri) {
         }
     }
     updateFavoriteButton(recipeUri);
-
     if(favoritesBtn.classList.contains('active')) {
         loadFavorites();
         closeModal();
     }
 }
-
 function updateFavoriteButton(recipeUri) {
     if (isFavorite(recipeUri)) {
         saveFavoriteBtn.textContent = "Remove from Favorites";
@@ -318,17 +294,48 @@ function updateFavoriteButton(recipeUri) {
         saveFavoriteBtn.classList.add("btn-success");
     }
 }
-
 function loadFavorites() {
     const favorites = getFavorites();
     searchResultDiv.innerHTML = "";
     hideLoadMoreButton();
     generateHTML(favorites);
     favoritesBtn.classList.add('active');
+    if (favorites.length > 0) {
+        shoppingListBtn.style.display = 'inline-block';
+    } else {
+        shoppingListBtn.style.display = 'none';
+    }
     container.classList.remove("initial");
     if(favorites.length === 0) {
         searchResultDiv.innerHTML = `<p class="error-message">You haven't saved any favorite recipes yet.</p>`;
     }
+}
+
+// --- Shopping List Logic ---
+function generateShoppingList() {
+    const favorites = getFavorites();
+    if (favorites.length === 0) {
+        showToast("You have no favorite recipes to generate a list from.", "error");
+        return;
+    }
+    const allIngredients = favorites.flatMap(recipe => recipe.ingredientLines);
+    shoppingListItemsUl.innerHTML = allIngredients.map(line => `<li>${line}</li>`).join("");
+    shoppingListModal.style.display = 'flex';
+}
+
+function copyShoppingList() {
+    const listItems = shoppingListItemsUl.querySelectorAll('li');
+    if (listItems.length === 0) {
+        showToast("Nothing to copy.", "error");
+        return;
+    }
+    const textToCopy = Array.from(listItems).map(item => item.textContent).join('\\n');
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        showToast("Shopping list copied to clipboard!", "success");
+    }).catch(err => {
+        showToast("Failed to copy list.", "error");
+        console.error('Failed to copy text: ', err);
+    });
 }
 
 // --- Toast Notification ---
@@ -337,7 +344,6 @@ function showToast(message, type = 'success') {
     toast.classList.add('toast', type);
     toast.textContent = message;
     toastContainer.appendChild(toast);
-
     setTimeout(() => {
         toast.remove();
     }, 3000);
@@ -345,24 +351,16 @@ function showToast(message, type = 'success') {
 
 // --- Theme Logic ---
 function applyTheme(theme) {
-    if (theme === 'dark') {
-        document.body.classList.add('dark-mode');
-    } else {
-        document.body.classList.remove('dark-mode');
-    }
+    document.body.classList.toggle('dark-mode', theme === 'dark');
 }
-
 function toggleTheme() {
     state.theme = state.theme === 'light' ? 'dark' : 'light';
     localStorage.setItem('theme', state.theme);
     applyTheme(state.theme);
 }
-
 function loadTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        state.theme = savedTheme;
-    }
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    state.theme = savedTheme;
     applyTheme(state.theme);
 }
 

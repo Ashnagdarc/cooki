@@ -78,6 +78,11 @@ section {
   align-items: center;
   margin-bottom: 20px;
 }
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .brand {
   text-align: center;
   font-size: 4rem;
@@ -278,6 +283,26 @@ form input {
 
 #modal-source-link {
     margin-right: 10px;
+}
+
+#shopping-list-items {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 20px 0;
+    max-height: 40vh;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: var(--border-radius-sm);
+}
+
+#shopping-list-items li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#shopping-list-items li:last-child {
+    border-bottom: none;
 }
 
 /* --- Filter Panel --- */
